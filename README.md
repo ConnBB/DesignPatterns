@@ -347,7 +347,7 @@ Wikipedia says
 Having said that let me add a bit about what telescoping constructor anti-pattern is. At one point or the other we have all seen a constructor like below:
 
 ```C#
-public function __construct($size, $cheese = true, $pepperoni = true, $tomato = false, $lettuce = true)
+public Burger(int size, bool cheese, bool pepperoni, bool lettuce, bool tomato)
 {
 }
 ```
@@ -361,79 +361,84 @@ The sane alternative is to use the builder pattern. First of all we have our bur
 ```C#
 class Burger
 {
-    protected $size;
+  private int mSize;
+  private bool mCheese;
+  private bool mPepperoni;
+  private bool mLettuce;
+  private bool mTomato;
 
-    protected $cheese = false;
-    protected $pepperoni = false;
-    protected $lettuce = false;
-    protected $tomato = false;
+  public Burger(BurgerBuilder builder)
+  {
+    this.mSize = builder.Size;
+    this.mCheese = builder.Cheese;
+    this.mPepperoni = builder.Pepperoni;
+    this.mLettuce = builder.Lettuce;
+    this.mTomato = builder.Tomato;
+  }
 
-    public function __construct(BurgerBuilder $builder)
-    {
-        $this->size = $builder->size;
-        $this->cheese = $builder->cheese;
-        $this->pepperoni = $builder->pepperoni;
-        $this->lettuce = $builder->lettuce;
-        $this->tomato = $builder->tomato;
-    }
+  public string GetDescription()
+  {
+    var sb = new StringBuilder();
+    sb.Append(String.Format("This is {0} inch Burger. ", this.mSize));
+    return sb.ToString();
+  }
 }
 ```
 
 And then we have the builder
 
 ```C#
-class BurgerBuilder
-{
-    public $size;
+class BurgerBuilder {
+  public int Size;
+  public bool Cheese;
+  public bool Pepperoni;
+  public bool Lettuce;
+  public bool Tomato;
 
-    public $cheese = false;
-    public $pepperoni = false;
-    public $lettuce = false;
-    public $tomato = false;
+  public BurgerBuilder(int size)
+  {
+    this.Size = size;
+  }
 
-    public function __construct(int $size)
-    {
-        $this->size = $size;
-    }
+  public BurgerBuilder AddCheese()
+  {
+    this.Cheese = true;
+    return this;
+  }
 
-    public function addPepperoni()
-    {
-        $this->pepperoni = true;
-        return $this;
-    }
+  public BurgerBuilder AddPepperoni()
+  {
+    this.Pepperoni = true;
+    return this;
+  }
 
-    public function addLettuce()
-    {
-        $this->lettuce = true;
-        return $this;
-    }
+  public BurgerBuilder AddLettuce()
+  {
+    this.Lettuce = true;
+    return this;
+  }
 
-    public function addCheese()
-    {
-        $this->cheese = true;
-        return $this;
-    }
+  public BurgerBuilder AddTomato()
+  {
+    this.Tomato = true;
+    return this;
+  }
 
-    public function addTomato()
-    {
-        $this->tomato = true;
-        return $this;
-    }
-
-    public function build(): Burger
-    {
-        return new Burger($this);
-    }
+  public Burger Build()
+  {
+    return new Burger(this);
+  }
 }
 ```
 And then it can be used as:
 
 ```C#
-$burger = (new BurgerBuilder(14))
-                    ->addPepperoni()
-                    ->addLettuce()
-                    ->addTomato()
-                    ->build();
+var burger = new BurgerBuilder(4).AddCheese()
+                                .AddPepperoni()
+                                .AddLettuce()
+                                .AddTomato()
+                                .Build();
+Console.WriteLine(burger.GetDescription());
 ```
 
 **When to use?**
