@@ -73,32 +73,31 @@ Wikipedia says
 **Programmatic Example**
 
 First of all we have a door interface and the implementation
-```php
-interface Door
+```c#
+public interface IDoor
 {
-    public function getWidth(): float;
-    public function getHeight(): float;
+    int GetHeight();
+    int GetWidth();
 }
 
-class WoodenDoor implements Door
+public class WoodenDoor : IDoor
 {
-    protected $width;
-    protected $height;
+    private int Height { get; set; }
+    private int Width { get; set; }
 
-    public function __construct(float $width, float $height)
+    public WoodenDoor(int height, int width)
     {
-        $this->width = $width;
-        $this->height = $height;
+        this.Height = height;
+        this.Width = width;
     }
 
-    public function getWidth(): float
+    public int GetHeight()
     {
-        return $this->width;
+        return this.Height;
     }
-
-    public function getHeight(): float
+    public int GetWidth()
     {
-        return $this->height;
+        return this.Width;
     }
 }
 ```
@@ -114,9 +113,9 @@ public static class DoorFactory
 ```
 And then it can be used as
 ```c#
-$door = DoorFactory::makeDoor(100, 200);
-echo 'Width: ' . $door->getWidth();
-echo 'Height: ' . $door->getHeight();
+var door = DoorFactory.MakeDoor(80, 30);
+Console.WriteLine("Height of Door : {0}", door.GetHeight());
+Console.WriteLine("Width of Door : {0}", door.GetWidth());
 ```
 
 **When to Use?**
