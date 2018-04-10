@@ -73,7 +73,7 @@ Wikipedia says
 **Programmatic Example**
 
 First of all we have a door interface and the implementation
-```c#
+```C#
 public interface IDoor
 {
     int GetHeight();
@@ -102,7 +102,7 @@ public class WoodenDoor : IDoor
 }
 ```
 Then we have our door factory that makes the door and returns it
-```c#
+```C#
 public static class DoorFactory
 {
     public static IDoor MakeDoor(int height, int width)
@@ -112,7 +112,7 @@ public static class DoorFactory
 }
 ```
 And then it can be used as
-```c#
+```C#
 var door = DoorFactory.MakeDoor(80, 30);
 Console.WriteLine("Height of Door : {0}", door.GetHeight());
 Console.WriteLine("Width of Door : {0}", door.GetWidth());
