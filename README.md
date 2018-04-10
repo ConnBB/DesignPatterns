@@ -594,32 +594,35 @@ Consider a game where there is a hunter and he hunts lions.
 First we have an interface `Lion` that all types of lions have to implement
 
 ```C#
-interface Lion
+interface ILion
 {
-    public function roar();
+  void Roar();
 }
 
-class AfricanLion implements Lion
+class AfricanLion : ILion
 {
-    public function roar()
-    {
-    }
+  public void Roar()
+  {
+      
+  }
 }
 
-class AsianLion implements Lion
+class AsiaLion : ILion
 {
-    public function roar()
-    {
-    }
+  public void Roar()
+  {
+      
+  }
 }
 ```
 And hunter expects any implementation of `Lion` interface to hunt.
 ```C#
 class Hunter
 {
-    public function hunt(Lion $lion)
-    {
-    }
+  public void Hunt(ILion lion)
+  {
+
+  }
 }
 ```
 
@@ -629,35 +632,33 @@ Now let's say we have to add a `WildDog` in our game so that hunter can hunt tha
 // This needs to be added to the game
 class WildDog
 {
-    public function bark()
-    {
-    }
+  public void bark()
+  {
+  }
 }
 
 // Adapter around wild dog to make it compatible with our game
-class WildDogAdapter implements Lion
+class WildDogAdapter : ILion
 {
-    protected $dog;
-
-    public function __construct(WildDog $dog)
-    {
-        $this->dog = $dog;
-    }
-
-    public function roar()
-    {
-        $this->dog->bark();
-    }
+  private WildDog mDog;
+  public WildDogAdapter(WildDog dog)
+  {
+    this.mDog = dog;
+  }
+  public void Roar()
+  {
+    mDog.bark();
+  }
 }
 ```
 And now the `WildDog` can be used in our game using `WildDogAdapter`.
 
 ```C#
-$wildDog = new WildDog();
-$wildDogAdapter = new WildDogAdapter($wildDog);
+var wildDog = new WildDog();
+var wildDogAdapter = new WildDogAdapter(wildDog);
 
-$hunter = new Hunter();
-$hunter->hunt($wildDogAdapter);
+var hunter = new Hunter();
+hunter.Hunt(wildDogAdapter);
 ```
 
 🚡 Bridge
