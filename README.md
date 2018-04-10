@@ -679,81 +679,82 @@ Wikipedia says
 Translating our WebPage example from above. Here we have the `WebPage` hierarchy
 
 ```C#
-interface WebPage
+interface IWebPage
 {
-    public function __construct(Theme $theme);
-    public function getContent();
+  string GetContent();
 }
 
-class About implements WebPage
+class About : IWebPage
 {
-    protected $theme;
+  protected ITheme theme;
 
-    public function __construct(Theme $theme)
-    {
-        $this->theme = $theme;
-    }
+  public About(ITheme theme)
+  {
+    this.theme = theme;
+  }
 
-    public function getContent()
-    {
-        return "About page in " . $this->theme->getColor();
-    }
+  public string GetContent()
+  {
+    return String.Format("About page in {0}",theme.GetColor());
+  }
 }
 
-class Careers implements WebPage
+class Careers : IWebPage
 {
-    protected $theme;
+  protected ITheme theme;
 
-    public function __construct(Theme $theme)
-    {
-        $this->theme = $theme;
-    }
+  public Careers(ITheme theme)
+  {
+    this.theme = theme;
+  }
 
-    public function getContent()
-    {
-        return "Careers page in " . $this->theme->getColor();
-    }
+  public string GetContent()
+  {
+    return String.Format("Careers page in {0}",theme.GetColor());
+  }
 }
 ```
 And the separate theme hierarchy
 ```C#
 
-interface Theme
+interface ITheme
 {
-    public function getColor();
+  string GetColor();
 }
 
-class DarkTheme implements Theme
+class DarkTheme : ITheme
 {
-    public function getColor()
-    {
-        return 'Dark Black';
-    }
+  public string GetColor()
+  {
+    return "Dark Black";
+  }
 }
-class LightTheme implements Theme
+
+class LightTheme : ITheme
 {
-    public function getColor()
-    {
-        return 'Off white';
-    }
+  public string GetColor()
+  {
+    return "Off White";
+  }
 }
-class AquaTheme implements Theme
+
+class AquaTheme : ITheme
 {
-    public function getColor()
-    {
-        return 'Light blue';
-    }
+  public string GetColor()
+  {
+    return "Light blue";
+  }
 }
 ```
 And both the hierarchies
 ```C#
-$darkTheme = new DarkTheme();
+var darkTheme = new DarkTheme();
 
-$about = new About($darkTheme);
-$careers = new Careers($darkTheme);
+var about= new About(darkTheme);
+var careers = new Careers(darkTheme);
 
-echo $about->getContent(); // "About page in Dark Black";
-echo $careers->getContent(); // "Careers page in Dark Black";
+Console.WriteLine(about.GetContent());
+Console.WriteLine(careers.GetContent());
 ```
 
 🌿 Composite
