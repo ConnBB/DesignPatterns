@@ -34,7 +34,7 @@ Wikipedia describes them as
 - Do not try to force them; bad things are supposed to happen, if done so. Keep in mind that design patterns are solutions **to** problems, not solutions **finding** problems; so don't overthink.
 - If used in a correct place in a correct manner, they can prove to be a savior; or else they can result in a horrible mess of a code.
 
-> Also note that the code samples below are in PHP-7, however this shouldn't stop you because the concepts are same anyways. Plus the **support for other languages is underway**.
+> Also note that the code samples below are in C#-7, however this shouldn't stop you because the concepts are same anyways. Plus the **support for other languages is underway**.
 
 Types of Design Patterns
 -----------------
@@ -139,60 +139,60 @@ Wikipedia says
 Taking our hiring manager example above. First of all we have an interviewer interface and some implementations for it
 
 ```C#
-  interface IInterviewer
-  {
+interface IInterviewer
+{
     void AskQuestions();
-  }
+}
 
-  class Developer : IInterviewer
-  {
+class Developer : IInterviewer
+{
     public void AskQuestions()
     {
-      Console.WriteLine("Asking about design patterns!");
+        Console.WriteLine("Asking about design patterns!");
     }
-  }
+}
 
-  class CommunityExecutive : IInterviewer
-  {
+class CommunityExecutive : IInterviewer
+{
     public void AskQuestions()
     {
-      Console.WriteLine("Asking about community building!");
+        Console.WriteLine("Asking about community building!");
     }
-  }
+}
 ```
 
 Now let us create our `HiringManager`
 
 ```C#
-  abstract class HiringManager
-  {
+abstract class HiringManager
+{
     // Factory method
     abstract protected IInterviewer MakeInterviewer();
     public void TakeInterview()
     {
-      var interviewer = this.MakeInterviewer();
-      interviewer.AskQuestions();
+        var interviewer = this.MakeInterviewer();
+        interviewer.AskQuestions();
     }
-  }
+}
 
 ```
 Now any child can extend it and provide the required interviewer
 ```C#
-  class DevelopmentManager : HiringManager
-  {
+class DevelopmentManager : HiringManager
+{
     protected override IInterviewer MakeInterviewer()
     {
-      return new Developer();
+        return new Developer();
     }
-  }
+}
 
-  class MarketingManager : HiringManager
-  {
+class MarketingManager : HiringManager
+{
     protected override IInterviewer MakeInterviewer()
     {
-      return new CommunityExecutive();
+        return new CommunityExecutive();
     }
-  }
+}
 
 ```
 and then it can be used as
@@ -226,107 +226,105 @@ Wikipedia says
 
 Translating the door example above. First of all we have our `Door` interface and some implementation for it
 
-```php
-interface Door
+```C#
+interface IDoor {
+
+  void GetDescription();
+
+}
+class WoodenDoor : IDoor
 {
-    public function getDescription();
+  public void GetDescription()
+  {
+    Console.WriteLine("I am a wooden door");
+  }
 }
 
-class WoodenDoor implements Door
+class IronDoor : IDoor
 {
-    public function getDescription()
-    {
-        echo 'I am a wooden door';
-    }
-}
-
-class IronDoor implements Door
-{
-    public function getDescription()
-    {
-        echo 'I am an iron door';
-    }
+  public void GetDescription()
+  {
+    Console.WriteLine("I am a iron door");
+  }
 }
 ```
 Then we have some fitting experts for each door type
 
-```php
-interface DoorFittingExpert
+```C#
+interface IDoorFittingExpert
 {
-    public function getDescription();
+  void GetDescription();
 }
 
-class Welder implements DoorFittingExpert
+class Welder : IDoorFittingExpert
 {
-    public function getDescription()
-    {
-        echo 'I can only fit iron doors';
-    }
+  public void GetDescription()
+  {
+    Console.WriteLine("I can only fit iron doors");
+  }
 }
 
-class Carpenter implements DoorFittingExpert
+class Carpenter : IDoorFittingExpert
 {
-    public function getDescription()
-    {
-        echo 'I can only fit wooden doors';
-    }
+  public void GetDescription()
+  {
+    Console.WriteLine("I can only fit wooden doors");
+  }
 }
 ```
 
 Now we have our abstract factory that would let us make family of related objects i.e. wooden door factory would create a wooden door and wooden door fitting expert and iron door factory would create an iron door and iron door fitting expert
-```php
-interface DoorFactory
-{
-    public function makeDoor(): Door;
-    public function makeFittingExpert(): DoorFittingExpert;
+```C#
+interface IDoorFactory {
+  IDoor MakeDoor();
+  IDoorFittingExpert MakeFittingExpert();
 }
 
 // Wooden factory to return carpenter and wooden door
-class WoodenDoorFactory implements DoorFactory
+class WoodenDoorFactory : IDoorFactory
 {
-    public function makeDoor(): Door
-    {
-        return new WoodenDoor();
-    }
+  public IDoor MakeDoor()
+  {
+    return new WoodenDoor();
+  }
 
-    public function makeFittingExpert(): DoorFittingExpert
-    {
-        return new Carpenter();
-    }
+  public IDoorFittingExpert MakeFittingExpert()
+  {
+    return new Carpenter();
+  }
 }
 
 // Iron door factory to get iron door and the relevant fitting expert
-class IronDoorFactory implements DoorFactory
+class IronDoorFactory : IDoorFactory
 {
-    public function makeDoor(): Door
-    {
-        return new IronDoor();
-    }
+  public IDoor MakeDoor()
+  {
+    return new IronDoor();
+  }
 
-    public function makeFittingExpert(): DoorFittingExpert
-    {
-        return new Welder();
-    }
+  public IDoorFittingExpert MakeFittingExpert()
+  {
+    return new Welder();
+  }
 }
 ```
 And then it can be used as
-```php
-$woodenFactory = new WoodenDoorFactory();
+```C#
+var woodenDoorFactory = new WoodenDoorFactory();
 
-$door = $woodenFactory->makeDoor();
-$expert = $woodenFactory->makeFittingExpert();
+var woodenDoor = woodenDoorFactory.MakeDoor();
+var woodenDoorFittingExpert = woodenDoorFactory.MakeFittingExpert();
 
-$door->getDescription();  // Output: I am a wooden door
-$expert->getDescription(); // Output: I can only fit wooden doors
+woodenDoor.GetDescription(); //Output : I am a wooden door
+woodenDoorFittingExpert.GetDescription();//Output : I can only fit woooden doors
 
-// Same for Iron Factory
-$ironFactory = new IronDoorFactory();
+var ironDoorFactory = new IronDoorFactory();
 
-$door = $ironFactory->makeDoor();
-$expert = $ironFactory->makeFittingExpert();
+var ironDoor = ironDoorFactory.MakeDoor();
+var ironDoorFittingExpert = ironDoorFactory.MakeFittingExpert();
 
-$door->getDescription();  // Output: I am an iron door
-$expert->getDescription(); // Output: I can only fit iron doors
+ironDoor.GetDescription();//Output : I am a iron door
+ironDoorFittingExpert.GetDescription();//Output : I can only fit iron doors
 ```
 
 As you can see the wooden door factory has encapsulated the `carpenter` and the `wooden door` also iron door factory has encapsulated the `iron door` and `welder`. And thus it had helped us make sure that for each of the created door, we do not get a wrong fitting expert.   
@@ -348,7 +346,7 @@ Wikipedia says
 
 Having said that let me add a bit about what telescoping constructor anti-pattern is. At one point or the other we have all seen a constructor like below:
 
-```php
+```C#
 public function __construct($size, $cheese = true, $pepperoni = true, $tomato = false, $lettuce = true)
 {
 }
@@ -360,7 +358,7 @@ As you can see; the number of constructor parameters can quickly get out of hand
 
 The sane alternative is to use the builder pattern. First of all we have our burger that we want to make
 
-```php
+```C#
 class Burger
 {
     protected $size;
@@ -383,7 +381,7 @@ class Burger
 
 And then we have the builder
 
-```php
+```C#
 class BurgerBuilder
 {
     public $size;
@@ -430,7 +428,7 @@ class BurgerBuilder
 ```
 And then it can be used as:
 
-```php
+```C#
 $burger = (new BurgerBuilder(14))
                     ->addPepperoni()
                     ->addLettuce()
@@ -457,9 +455,9 @@ In short, it allows you to create a copy of an existing object and modify it to 
 
 **Programmatic Example**
 
-In PHP, it can be easily done using `clone`
+In C#, it can be easily done using `clone`
 
-```php
+```C#
 class Sheep
 {
     protected $name;
@@ -493,7 +491,7 @@ class Sheep
 }
 ```
 Then it can be cloned like below
-```php
+```C#
 $original = new Sheep('Jolly');
 echo $original->getName(); // Jolly
 echo $original->getCategory(); // Mountain Sheep
@@ -527,7 +525,7 @@ Singleton pattern is actually considered an anti-pattern and overuse of it shoul
 **Programmatic Example**
 
 To create a singleton, make the constructor private, disable cloning, disable extension and create a static variable to house the instance
-```php
+```C#
 final class President
 {
     private static $instance;
@@ -558,7 +556,7 @@ final class President
 }
 ```
 Then in order to use
-```php
+```C#
 $president1 = President::getInstance();
 $president2 = President::getInstance();
 
@@ -600,7 +598,7 @@ Consider a game where there is a hunter and he hunts lions.
 
 First we have an interface `Lion` that all types of lions have to implement
 
-```php
+```C#
 interface Lion
 {
     public function roar();
@@ -621,7 +619,7 @@ class AsianLion implements Lion
 }
 ```
 And hunter expects any implementation of `Lion` interface to hunt.
-```php
+```C#
 class Hunter
 {
     public function hunt(Lion $lion)
@@ -632,7 +630,7 @@ class Hunter
 
 Now let's say we have to add a `WildDog` in our game so that hunter can hunt that also. But we can't do that directly because dog has a different interface. To make it compatible for our hunter, we will have to create an adapter that is compatible
 
-```php
+```C#
 // This needs to be added to the game
 class WildDog
 {
@@ -659,7 +657,7 @@ class WildDogAdapter implements Lion
 ```
 And now the `WildDog` can be used in our game using `WildDogAdapter`.
 
-```php
+```C#
 $wildDog = new WildDog();
 $wildDogAdapter = new WildDogAdapter($wildDog);
 
@@ -684,7 +682,7 @@ Wikipedia says
 
 Translating our WebPage example from above. Here we have the `WebPage` hierarchy
 
-```php
+```C#
 interface WebPage
 {
     public function __construct(Theme $theme);
@@ -722,7 +720,7 @@ class Careers implements WebPage
 }
 ```
 And the separate theme hierarchy
-```php
+```C#
 
 interface Theme
 {
@@ -752,7 +750,7 @@ class AquaTheme implements Theme
 }
 ```
 And both the hierarchies
-```php
+```C#
 $darkTheme = new DarkTheme();
 
 $about = new About($darkTheme);
@@ -778,7 +776,7 @@ Wikipedia says
 
 Taking our employees example from above. Here we have different employee types
 
-```php
+```C#
 interface Employee
 {
     public function __construct(string $name, float $salary);
@@ -857,7 +855,7 @@ class Designer implements Employee
 
 Then we have an organization which consists of several different types of employees
 
-```php
+```C#
 class Organization
 {
     protected $employees;
@@ -882,7 +880,7 @@ class Organization
 
 And then it can be used as
 
-```php
+```C#
 // Prepare the employees
 $john = new Developer('John Doe', 12000);
 $jane = new Designer('Jane Doe', 15000);
@@ -912,7 +910,7 @@ Wikipedia says
 
 Lets take coffee for example. First of all we have a simple coffee implementing the coffee interface
 
-```php
+```C#
 interface Coffee
 {
     public function getCost();
@@ -933,7 +931,7 @@ class SimpleCoffee implements Coffee
 }
 ```
 We want to make the code extensible to allow options to modify it if required. Lets make some add-ons (decorators)
-```php
+```C#
 class MilkCoffee implements Coffee
 {
     protected $coffee;
@@ -997,7 +995,7 @@ class VanillaCoffee implements Coffee
 
 Lets make a coffee now
 
-```php
+```C#
 $someCoffee = new SimpleCoffee();
 echo $someCoffee->getCost(); // 10
 echo $someCoffee->getDescription(); // Simple Coffee
@@ -1031,7 +1029,7 @@ Wikipedia says
 
 Taking our computer example from above. Here we have the computer class
 
-```php
+```C#
 class Computer
 {
     public function getElectricShock()
@@ -1071,7 +1069,7 @@ class Computer
 }
 ```
 Here we have the facade
-```php
+```C#
 class ComputerFacade
 {
     protected $computer;
@@ -1098,7 +1096,7 @@ class ComputerFacade
 }
 ```
 Now to use the facade
-```php
+```C#
 $computer = new ComputerFacade(new Computer());
 $computer->turnOn(); // Ouch! Beep beep! Loading.. Ready to be used!
 $computer->turnOff(); // Bup bup buzzz! Haah! Zzzzz
@@ -1120,7 +1118,7 @@ Wikipedia says
 
 Translating our tea example from above. First of all we have tea types and tea maker
 
-```php
+```C#
 // Anything that will be cached is flyweight.
 // Types of tea here will be flyweights.
 class KarakTea
@@ -1145,7 +1143,7 @@ class TeaMaker
 
 Then we have the `TeaShop` which takes orders and serves them
 
-```php
+```C#
 class TeaShop
 {
     protected $orders;
@@ -1171,7 +1169,7 @@ class TeaShop
 ```
 And it can be used as below
 
-```php
+```C#
 $teaMaker = new TeaMaker();
 $shop = new TeaShop($teaMaker);
 
@@ -1200,7 +1198,7 @@ Wikipedia says
 
 Taking our security door example from above. Firstly we have the door interface and an implementation of door
 
-```php
+```C#
 interface Door
 {
     public function open();
@@ -1221,7 +1219,7 @@ class LabDoor implements Door
 }
 ```
 Then we have a proxy to secure any doors that we want
-```php
+```C#
 class SecuredDoor
 {
     protected $door;
@@ -1252,7 +1250,7 @@ class SecuredDoor
 }
 ```
 And here is how it can be used
-```php
+```C#
 $door = new SecuredDoor(new LabDoor());
 $door->open('invalid'); // Big no! It ain't possible.
 
@@ -1297,7 +1295,7 @@ Wikipedia says
 
 Translating our account example above. First of all we have a base account having the logic for chaining the accounts together and some accounts
 
-```php
+```C#
 abstract class Account
 {
     protected $successor;
@@ -1311,9 +1309,9 @@ abstract class Account
     public function pay(float $amountToPay)
     {
         if ($this->canPay($amountToPay)) {
-            echo sprintf('Paid %s using %s' . PHP_EOL, $amountToPay, get_called_class());
+            echo sprintf('Paid %s using %s' . C#_EOL, $amountToPay, get_called_class());
         } elseif ($this->successor) {
-            echo sprintf('Cannot pay using %s. Proceeding ..' . PHP_EOL, get_called_class());
+            echo sprintf('Cannot pay using %s. Proceeding ..' . C#_EOL, get_called_class());
             $this->successor->pay($amountToPay);
         } else {
             throw new Exception('None of the accounts have enough balance');
@@ -1359,7 +1357,7 @@ class Bitcoin extends Account
 
 Now let's prepare the chain using the links defined above (i.e. Bank, Paypal, Bitcoin)
 
-```php
+```C#
 // Let's prepare a chain like below
 //      $bank->$paypal->$bitcoin
 //
@@ -1400,7 +1398,7 @@ Wikipedia says
 **Programmatic Example**
 
 First of all we have the receiver that has the implementation of every action that could be performed
-```php
+```C#
 // Receiver
 class Bulb
 {
@@ -1416,7 +1414,7 @@ class Bulb
 }
 ```
 then we have an interface that each of the commands are going to implement and then we have a set of commands
-```php
+```C#
 interface Command
 {
     public function execute();
@@ -1476,7 +1474,7 @@ class TurnOff implements Command
 }
 ```
 Then we have an `Invoker` with whom the client will interact to process any commands
-```php
+```C#
 // Invoker
 class RemoteControl
 {
@@ -1487,7 +1485,7 @@ class RemoteControl
 }
 ```
 Finally let's see how we can use it in our client
-```php
+```C#
 $bulb = new Bulb();
 
 $turnOn = new TurnOn($bulb);
@@ -1514,9 +1512,9 @@ Wikipedia says
 
 **Programmatic example**
 
-In PHP it is quite easy to implement using SPL (Standard PHP Library). Translating our radio stations example from above. First of all we have `RadioStation`
+In C# it is quite easy to implement using SPL (Standard C# Library). Translating our radio stations example from above. First of all we have `RadioStation`
 
-```php
+```C#
 class RadioStation
 {
     protected $frequency;
@@ -1534,7 +1532,7 @@ class RadioStation
 ```
 Then we have our iterator
 
-```php
+```C#
 use Countable;
 use Iterator;
 
@@ -1591,7 +1589,7 @@ class StationList implements Countable, Iterator
 }
 ```
 And then it can be used as
-```php
+```C#
 $stationList = new StationList();
 
 $stationList->addStation(new RadioStation(89));
@@ -1600,7 +1598,7 @@ $stationList->addStation(new RadioStation(102));
 $stationList->addStation(new RadioStation(103.2));
 
 foreach($stationList as $station) {
-    echo $station->getFrequency() . PHP_EOL;
+    echo $station->getFrequency() . C#_EOL;
 }
 
 $stationList->removeStation(new RadioStation(89)); // Will remove station 89
@@ -1624,7 +1622,7 @@ Here is the simplest example of a chat room (i.e. mediator) with users (i.e. col
 
 First of all, we have the mediator i.e. the chat room
 
-```php
+```C#
 interface ChatRoomMediator 
 {
     public function showMessage(User $user, string $message);
@@ -1644,7 +1642,7 @@ class ChatRoom implements ChatRoomMediator
 ```
 
 Then we have our users i.e. colleagues
-```php
+```C#
 class User {
     protected $name;
     protected $chatMediator;
@@ -1664,7 +1662,7 @@ class User {
 }
 ```
 And the usage
-```php
+```C#
 $mediator = new ChatRoom();
 
 $john = new User('John Doe', $mediator);
@@ -1697,7 +1695,7 @@ Lets take an example of text editor which keeps saving the state from time to ti
 
 First of all we have our memento object that will be able to hold the editor state
 
-```php
+```C#
 class EditorMemento
 {
     protected $content;
@@ -1716,7 +1714,7 @@ class EditorMemento
 
 Then we have our editor i.e. originator that is going to use memento object
 
-```php
+```C#
 class Editor
 {
     protected $content = '';
@@ -1745,7 +1743,7 @@ class Editor
 
 And then it can be used as
 
-```php
+```C#
 $editor = new Editor();
 
 // Type some stuff
@@ -1781,7 +1779,7 @@ Wikipedia says
 **Programmatic example**
 
 Translating our example from above. First of all we have job seekers that need to be notified for a job posting
-```php
+```C#
 class JobPost
 {
     protected $title;
@@ -1814,7 +1812,7 @@ class JobSeeker implements Observer
 }
 ```
 Then we have our job postings to which the job seekers will subscribe
-```php
+```C#
 class JobPostings implements Observable
 {
     protected $observers = [];
@@ -1838,7 +1836,7 @@ class JobPostings implements Observable
 }
 ```
 Then it can be used as
-```php
+```C#
 // Create subscribers
 $johnDoe = new JobSeeker('John Doe');
 $janeDoe = new JobSeeker('Jane Doe');
@@ -1871,7 +1869,7 @@ Wikipedia says
 
 Let's take an example of a zoo simulation where we have several different kinds of animals and we have to make them Sound. Let's translate this using visitor pattern
 
-```php
+```C#
 // Visitee
 interface Animal
 {
@@ -1887,7 +1885,7 @@ interface AnimalOperation
 }
 ```
 Then we have our implementations for the animals
-```php
+```C#
 class Monkey implements Animal
 {
     public function shout()
@@ -1928,7 +1926,7 @@ class Dolphin implements Animal
 }
 ```
 Let's implement our visitor
-```php
+```C#
 class Speak implements AnimalOperation
 {
     public function visitMonkey(Monkey $monkey)
@@ -1949,7 +1947,7 @@ class Speak implements AnimalOperation
 ```
 
 And then it can be used as
-```php
+```C#
 $monkey = new Monkey();
 $lion = new Lion();
 $dolphin = new Dolphin();
@@ -1962,7 +1960,7 @@ $dolphin->accept($speak);   // Tuut tutt tuutt!
 ```
 We could have done this simply by having an inheritance hierarchy for the animals but then we would have to modify the animals whenever we would have to add new actions to animals. But now we will not have to change them. For example, let's say we are asked to add the jump behavior to the animals, we can simply add that by creating a new visitor i.e.
 
-```php
+```C#
 class Jump implements AnimalOperation
 {
     public function visitMonkey(Monkey $monkey)
@@ -1982,7 +1980,7 @@ class Jump implements AnimalOperation
 }
 ```
 And for the usage
-```php
+```C#
 $jump = new Jump();
 
 $monkey->accept($speak);   // Ooh oo aa aa!
@@ -2011,7 +2009,7 @@ Wikipedia says
 
 Translating our example from above. First of all we have our strategy interface and different strategy implementations
 
-```php
+```C#
 interface SortStrategy
 {
     public function sort(array $dataset): array;
@@ -2041,7 +2039,7 @@ class QuickSortStrategy implements SortStrategy
 ```
 
 And then we have our client that is going to use any strategy
-```php
+```C#
 class Sorter
 {
     protected $sorter;
@@ -2058,7 +2056,7 @@ class Sorter
 }
 ```
 And it can be used as
-```php
+```C#
 $dataset = [1, 5, 4, 3, 2, 8];
 
 $sorter = new Sorter(new BubbleSortStrategy());
@@ -2086,7 +2084,7 @@ Let's take an example of text editor, it lets you change the state of text that 
 
 First of all we have our state interface and some state implementations
 
-```php
+```C#
 interface WritingState
 {
     public function write(string $words);
@@ -2117,7 +2115,7 @@ class DefaultText implements WritingState
 }
 ```
 Then we have our editor
-```php
+```C#
 class TextEditor
 {
     protected $state;
@@ -2139,7 +2137,7 @@ class TextEditor
 }
 ```
 And then it can be used as
-```php
+```C#
 $editor = new TextEditor(new DefaultText());
 
 $editor->type('First line');
@@ -2185,7 +2183,7 @@ Wikipedia says
 Imagine we have a build tool that helps us test, lint, build, generate build reports (i.e. code coverage reports, linting report etc) and deploy our app on the test server.
 
 First of all we have our base class that specifies the skeleton for the build algorithm
-```php
+```C#
 abstract class Builder
 {
 
@@ -2207,7 +2205,7 @@ abstract class Builder
 
 Then we can have our implementations
 
-```php
+```C#
 class AndroidBuilder extends Builder
 {
     public function test()
@@ -2256,7 +2254,7 @@ class IosBuilder extends Builder
 ```
 And then it can be used as
 
-```php
+```C#
 $androidBuilder = new AndroidBuilder();
 $androidBuilder->build();
 
