@@ -103,17 +103,17 @@ class WoodenDoor implements Door
 }
 ```
 Then we have our door factory that makes the door and returns it
-```php
-class DoorFactory
+```c#
+public static class DoorFactory
 {
-    public static function makeDoor($width, $height): Door
+    public static IDoor MakeDoor(int height, int width)
     {
-        return new WoodenDoor($width, $height);
+        return new WoodenDoor(height, width);
     }
 }
 ```
 And then it can be used as
-```php
+```c#
 $door = DoorFactory::makeDoor(100, 200);
 echo 'Width: ' . $door->getWidth();
 echo 'Height: ' . $door->getHeight();
