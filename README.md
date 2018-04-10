@@ -138,72 +138,72 @@ Wikipedia says
 
 Taking our hiring manager example above. First of all we have an interviewer interface and some implementations for it
 
-```php
-interface Interviewer
-{
-    public function askQuestions();
-}
+```C#
+  interface IInterviewer
+  {
+    void AskQuestions();
+  }
 
-class Developer implements Interviewer
-{
-    public function askQuestions()
+  class Developer : IInterviewer
+  {
+    public void AskQuestions()
     {
-        echo 'Asking about design patterns!';
+      Console.WriteLine("Asking about design patterns!");
     }
-}
+  }
 
-class CommunityExecutive implements Interviewer
-{
-    public function askQuestions()
+  class CommunityExecutive : IInterviewer
+  {
+    public void AskQuestions()
     {
-        echo 'Asking about community building';
+      Console.WriteLine("Asking about community building!");
     }
-}
+  }
 ```
 
 Now let us create our `HiringManager`
 
-```php
-abstract class HiringManager
-{
-
+```C#
+  abstract class HiringManager
+  {
     // Factory method
-    abstract protected function makeInterviewer(): Interviewer;
-
-    public function takeInterview()
+    abstract protected IInterviewer MakeInterviewer();
+    public void TakeInterview()
     {
-        $interviewer = $this->makeInterviewer();
-        $interviewer->askQuestions();
+      var interviewer = this.MakeInterviewer();
+      interviewer.AskQuestions();
     }
-}
+  }
 
 ```
 Now any child can extend it and provide the required interviewer
-```php
-class DevelopmentManager extends HiringManager
-{
-    protected function makeInterviewer(): Interviewer
+```C#
+  class DevelopmentManager : HiringManager
+  {
+    protected override IInterviewer MakeInterviewer()
     {
-        return new Developer();
+      return new Developer();
     }
-}
+  }
 
-class MarketingManager extends HiringManager
-{
-    protected function makeInterviewer(): Interviewer
+  class MarketingManager : HiringManager
+  {
+    protected override IInterviewer MakeInterviewer()
     {
-        return new CommunityExecutive();
+      return new CommunityExecutive();
     }
-}
+  }
+
 ```
 and then it can be used as
 
-```php
-$devManager = new DevelopmentManager();
-$devManager->takeInterview(); // Output: Asking about design patterns
+```C#
+var devManager = new DevelopmentManager();
+devManager.TakeInterview(); //Output : Asking about design patterns!
 
-$marketingManager = new MarketingManager();
-$marketingManager->takeInterview(); // Output: Asking about community building.
+var marketingManager = new MarketingManager();
+marketingManager.TakeInterview();//Output : Asking about community building!
+
 ```
 
 **When to use?**
