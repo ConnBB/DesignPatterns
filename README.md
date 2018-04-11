@@ -774,79 +774,66 @@ Wikipedia says
 Taking our employees example from above. Here we have different employee types
 
 ```C#
-interface Employee
+interface IEmployee
 {
-    public function __construct(string $name, float $salary);
-    public function getName(): string;
-    public function setSalary(float $salary);
-    public function getSalary(): float;
-    public function getRoles(): array;
+  float GetSalary();
+  string GetRole();
+  string GetName();
 }
 
-class Developer implements Employee
+
+class Developer : IEmployee
 {
-    protected $salary;
-    protected $name;
-    protected $roles;
-    
-    public function __construct(string $name, float $salary)
-    {
-        $this->name = $name;
-        $this->salary = $salary;
-    }
+  private string mName;
+  private float mSalary;
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+  public Developer(string name, float salary)
+  {
+    this.mName = name;
+    this.mSalary = salary;
+  }
 
-    public function setSalary(float $salary)
-    {
-        $this->salary = $salary;
-    }
+  public float GetSalary()
+  {
+    return this.mSalary;
+  }
 
-    public function getSalary(): float
-    {
-        return $this->salary;
-    }
+  public string GetRole()
+  {
+    return "Developer";
+  }
 
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
+  public string GetName()
+  {
+    return this.mName;
+  }
 }
 
-class Designer implements Employee
+class Designer : IEmployee
 {
-    protected $salary;
-    protected $name;
-    protected $roles;
+  private string mName;
+  private float mSalary;
 
-    public function __construct(string $name, float $salary)
-    {
-        $this->name = $name;
-        $this->salary = $salary;
-    }
+  public Designer(string name, float salary)
+  {
+    this.mName = name;
+    this.mSalary = salary;
+  }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
+  public float GetSalary()
+  {
+    return this.mSalary;
+  }
 
-    public function setSalary(float $salary)
-    {
-        $this->salary = $salary;
-    }
+  public string GetRole()
+  {
+    return "Designer";
+  }
 
-    public function getSalary(): float
-    {
-        return $this->salary;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
+  public string GetName()
+  {
+    return this.mName;
+  }
 }
 ```
 
@@ -855,39 +842,43 @@ Then we have an organization which consists of several different types of employ
 ```C#
 class Organization
 {
-    protected $employees;
+  protected List<IEmployee> employees;
 
-    public function addEmployee(Employee $employee)
-    {
-        $this->employees[] = $employee;
+  public Organization()
+  {
+    employees = new List<IEmployee>();
+  }
+
+  public void AddEmployee(IEmployee employee)
+  {
+    employees.Add(employee);
+  }
+
+  public float GetNetSalaries()
+  {
+    float netSalary = 0;
+
+    foreach (var e in employees) {
+      netSalary += e.GetSalary();
     }
-
-    public function getNetSalaries(): float
-    {
-        $netSalary = 0;
-
-        foreach ($this->employees as $employee) {
-            $netSalary += $employee->getSalary();
-        }
-
-        return $netSalary;
-    }
+    return netSalary;
+  }
 }
 ```
 
 And then it can be used as
 
 ```C#
-// Prepare the employees
-$john = new Developer('John Doe', 12000);
-$jane = new Designer('Jane Doe', 15000);
+//Arrange Employees, Organization and add employees
+var developer = new Developer("John", 5000);
+var designer = new Designer("Arya", 5000);
 
-// Add them to organization
-$organization = new Organization();
-$organization->addEmployee($john);
-$organization->addEmployee($jane);
+var organization = new Organization();
+organization.AddEmployee(developer);
+organization.AddEmployee(designer);
+//Act
+Console.WriteLine("Net Salary of Emmployees in Organization is {0:c}", organization.GetNetSalaries());
 
-echo "Net salaries: " . $organization->getNetSalaries(); // Net Salaries: 27000
 ```
 
 ☕ Decorator
