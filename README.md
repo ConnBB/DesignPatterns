@@ -1388,77 +1388,78 @@ Wikipedia says
 First of all we have the receiver that has the implementation of every action that could be performed
 ```C#
 // Receiver
+// Receiver
 class Bulb
 {
-    public function turnOn()
-    {
-        echo "Bulb has been lit";
-    }
+  public void TurnOn()
+  {
+    Console.WriteLine("Bulb has been lit");
+  }
 
-    public function turnOff()
-    {
-        echo "Darkness!";
-    }
+  public void TurnOff()
+  {
+    Console.WriteLine("Darkness!");
+  }
 }
 ```
 then we have an interface that each of the commands are going to implement and then we have a set of commands
 ```C#
-interface Command
+interface ICommand
 {
-    public function execute();
-    public function undo();
-    public function redo();
+  void Execute();
+  void Undo();
+  void Redo();
 }
 
 // Command
-class TurnOn implements Command
+class TurnOn : ICommand
 {
-    protected $bulb;
+  private Bulb mBulb;
 
-    public function __construct(Bulb $bulb)
-    {
-        $this->bulb = $bulb;
-    }
+  public TurnOn(Bulb bulb)
+  {
+    mBulb = bulb ?? throw new ArgumentNullException("Bulb", "Bulb cannot be null");
+  }
 
-    public function execute()
-    {
-        $this->bulb->turnOn();
-    }
+  public void Execute()
+  {
+    mBulb.TurnOn();
+  }
 
-    public function undo()
-    {
-        $this->bulb->turnOff();
-    }
+  public void Undo()
+  {
+    mBulb.TurnOff();
+  }
 
-    public function redo()
-    {
-        $this->execute();
-    }
+  public void Redo()
+  {
+    Execute();
+  }
 }
 
-class TurnOff implements Command
+class TurnOff : ICommand
 {
-    protected $bulb;
+  private Bulb mBulb;
 
-    public function __construct(Bulb $bulb)
-    {
-        $this->bulb = $bulb;
-    }
+  public TurnOff(Bulb bulb)
+  {
+    mBulb = bulb ?? throw new ArgumentNullException("Bulb", "Bulb cannot be null");
+  }
 
-    public function execute()
-    {
-        $this->bulb->turnOff();
-    }
+  public void Execute()
+  {
+    mBulb.TurnOff();
+  }
 
-    public function undo()
-    {
-        $this->bulb->turnOn();
-    }
+  public void Undo()
+  {
+    mBulb.TurnOn();
+  }
 
-    public function redo()
-    {
-        $this->execute();
-    }
+  public void Redo()
+  {
+    Execute();
+  }
 }
 ```
 Then we have an `Invoker` with whom the client will interact to process any commands
@@ -1466,22 +1467,24 @@ Then we have an `Invoker` with whom the client will interact to process any comm
 // Invoker
 class RemoteControl
 {
-    public function submit(Command $command)
-    {
-        $command->execute();
-    }
+  public void Submit(ICommand command)
+  {
+    command.Execute();
+  }
 }
 ```
 Finally let's see how we can use it in our client
 ```C#
-$bulb = new Bulb();
+  var bulb = new Bulb();
 
-$turnOn = new TurnOn($bulb);
-$turnOff = new TurnOff($bulb);
+  var turnOn = new TurnOn(bulb);
+  var turnOff = new TurnOff(bulb);
 
-$remote = new RemoteControl();
-$remote->submit($turnOn); // Bulb has been lit!
-$remote->submit($turnOff); // Darkness!
+  var remote = new RemoteControl();
+  remote.Submit(turnOn); // Bulb has been lit!
+  remote.Submit(turnOff); // Darkness!
+
+  Console.ReadLine();
 ```
 
 Command pattern can also be used to implement a transaction based system. Where you keep maintaining the history of commands as soon as you execute them. If the final command is successfully executed, all good otherwise just iterate through the history and keep executing the `undo` on all the executed commands.
