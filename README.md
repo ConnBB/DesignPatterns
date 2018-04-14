@@ -899,106 +899,104 @@ Wikipedia says
 Lets take coffee for example. First of all we have a simple coffee implementing the coffee interface
 
 ```C#
-interface Coffee
+interface ICoffee
 {
-    public function getCost();
-    public function getDescription();
+  int GetCost();
+  string GetDescription();
 }
 
-class SimpleCoffee implements Coffee
+class SimpleCoffee : ICoffee
 {
-    public function getCost()
-    {
-        return 10;
-    }
+  public int GetCost()
+  {
+    return 5;
+  }
 
-    public function getDescription()
-    {
-        return 'Simple coffee';
-    }
+  public string GetDescription()
+  {
+    return "Simple Coffee";
+  }
 }
 ```
 We want to make the code extensible to allow options to modify it if required. Lets make some add-ons (decorators)
 ```C#
-class MilkCoffee implements Coffee
+class MilkCoffee : ICoffee
 {
-    protected $coffee;
+  private readonly ICoffee mCoffee;
 
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
-    }
+  public MilkCoffee(ICoffee coffee)
+  {
+    mCoffee = coffee ?? throw new ArgumentNullException("coffee", "coffee should not be null");
+  }
+  public int GetCost()
+  {
+    return mCoffee.GetCost() + 1;
+  }
 
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 2;
-    }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', milk';
-    }
+  public string GetDescription()
+  {
+    return String.Concat(mCoffee.GetDescription(), ", milk");
+  }
 }
 
-class WhipCoffee implements Coffee
+class WhipCoffee : ICoffee
 {
-    protected $coffee;
+  private readonly ICoffee mCoffee;
 
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
-    }
+  public WhipCoffee(ICoffee coffee)
+  {
+    mCoffee = coffee ?? throw new ArgumentNullException("coffee", "coffee should not be null");
+  }
+  public int GetCost()
+  {
+    return mCoffee.GetCost() + 1;
+  }
 
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 5;
-    }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', whip';
-    }
+  public string GetDescription()
+  {
+    return String.Concat(mCoffee.GetDescription(), ", whip");
+  }
 }
 
-class VanillaCoffee implements Coffee
+class VanillaCoffee : ICoffee
 {
-    protected $coffee;
+  private readonly ICoffee mCoffee;
 
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
-    }
+  public VanillaCoffee(ICoffee coffee)
+  {
+    mCoffee = coffee ?? throw new ArgumentNullException("coffee", "coffee should not be null");
+  }
+  public int GetCost()
+  {
+    return mCoffee.GetCost() + 1;
+  }
 
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 3;
-    }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', vanilla';
-    }
+  public string GetDescription()
+  {
+    return String.Concat(mCoffee.GetDescription(), ", vanilla");
+  }
 }
+
 ```
 
 Lets make a coffee now
 
 ```C#
-$someCoffee = new SimpleCoffee();
-echo $someCoffee->getCost(); // 10
-echo $someCoffee->getDescription(); // Simple Coffee
+var myCoffee = new SimpleCoffee();
+Console.WriteLine("{0:c}",myCoffee.GetCost()); // $ 5.00
+Console.WriteLine("{0}", myCoffee.GetDescription()); // Simple Coffee
 
-$someCoffee = new MilkCoffee($someCoffee);
-echo $someCoffee->getCost(); // 12
-echo $someCoffee->getDescription(); // Simple Coffee, milk
+var milkCoffee = new MilkCoffee(myCoffee);
+Console.WriteLine("{0:c}", milkCoffee.GetCost()); // $ 6.00
+Console.WriteLine("{0}", milkCoffee.GetDescription()); // Simple Coffee, milk
 
-$someCoffee = new WhipCoffee($someCoffee);
-echo $someCoffee->getCost(); // 17
-echo $someCoffee->getDescription(); // Simple Coffee, milk, whip
+var whipCoffee = new WhipCoffee(milkCoffee);
+Console.WriteLine("{0:c}", whipCoffee.GetCost()); // $ 7.00
+Console.WriteLine("{0}", whipCoffee.GetDescription()); // Simple Coffee, milk, whip
 
-$someCoffee = new VanillaCoffee($someCoffee);
-echo $someCoffee->getCost(); // 20
-echo $someCoffee->getDescription(); // Simple Coffee, milk, whip, vanilla
+var vanillaCoffee = new VanillaCoffee(whipCoffee);
+Console.WriteLine("{0:c}", vanillaCoffee.GetCost()); // $ 8.00
+Console.WriteLine("{0}", vanillaCoffee.GetDescription()); // Simple Coffee, milk, whip
 ```
 
 📦 Facade
