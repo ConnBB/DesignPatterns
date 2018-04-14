@@ -1290,60 +1290,58 @@ Translating our account example above. First of all we have a base account havin
 ```C#
 abstract class Account
 {
-    protected $successor;
-    protected $balance;
+  private Account mSuccessor;
+  protected decimal mBalance;
 
-    public function setNext(Account $account)
-    {
-        $this->successor = $account;
-    }
+  public void SetNext(Account account)
+  {
+    mSuccessor = account;
+  }
 
-    public function pay(float $amountToPay)
+  public void Pay(decimal amountTopay)
+  {
+    if (CanPay(amountTopay))
     {
-        if ($this->canPay($amountToPay)) {
-            echo sprintf('Paid %s using %s' . C#_EOL, $amountToPay, get_called_class());
-        } elseif ($this->successor) {
-            echo sprintf('Cannot pay using %s. Proceeding ..' . C#_EOL, get_called_class());
-            $this->successor->pay($amountToPay);
-        } else {
-            throw new Exception('None of the accounts have enough balance');
-        }
+      Console.WriteLine("Paid {0:c} using {1}.", amountTopay, this.GetType().Name);
     }
-
-    public function canPay($amount): bool
+    else if (this.mSuccessor != null)
     {
-        return $this->balance >= $amount;
+      Console.WriteLine("Cannot pay using {0}. Proceeding..", this.GetType().Name);
+      mSuccessor.Pay(amountTopay);
     }
+    else
+    {
+      throw new Exception("None of the accounts have enough balance");
+    }
+  }
+  private bool CanPay(decimal amount)
+  {
+    return mBalance >= amount ? true : false;
+  }
 }
 
-class Bank extends Account
+class Bank : Account
 {
-    protected $balance;
-
-    public function __construct(float $balance)
-    {
-        $this->balance = $balance;
-    }
+  public Bank(decimal balance)
+  {
+    this.mBalance = balance;
+  }
 }
 
-class Paypal extends Account
+class Paypal : Account
 {
-    protected $balance;
-
-    public function __construct(float $balance)
-    {
-        $this->balance = $balance;
-    }
+  public Paypal(decimal balance)
+  {
+    this.mBalance = balance;
+  }
 }
 
-class Bitcoin extends Account
+class Bitcoin : Account
 {
-    protected $balance;
-
-    public function __construct(float $balance)
-    {
-        $this->balance = $balance;
-    }
+  public Bitcoin(decimal balance)
+  {
+    this.mBalance = balance;
+  }
 }
 ```
 
@@ -1356,17 +1354,15 @@ Now let's prepare the chain using the links defined above (i.e. Bank, Paypal, Bi
 // First priority bank
 //      If bank can't pay then paypal
 //      If paypal can't pay then bit coin
+var bank = new Bank(100);          // Bank with balance 100
+var paypal = new Paypal(200);      // Paypal with balance 200
+var bitcoin = new Bitcoin(300);    // Bitcoin with balance 300
 
-$bank = new Bank(100);          // Bank with balance 100
-$paypal = new Paypal(200);      // Paypal with balance 200
-$bitcoin = new Bitcoin(300);    // Bitcoin with balance 300
-
-$bank->setNext($paypal);
-$paypal->setNext($bitcoin);
+bank.SetNext(paypal);
+paypal.SetNext(bitcoin);
 
 // Let's try to pay using the first priority i.e. bank
-$bank->pay(259);
-
+bank.Pay(259);
 // Output will be
 // ==============
 // Cannot pay using bank. Proceeding ..
