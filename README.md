@@ -1116,16 +1116,17 @@ class KarakTea
 // Acts as a factory and saves the tea
 class TeaMaker
 {
-    protected $availableTea = [];
+  private Dictionary<string,KarakTea> mAvailableTea = new Dictionary<string,KarakTea>();
 
-    public function make($preference)
+  public KarakTea Make(string preference)
+  {
+    if (!mAvailableTea.ContainsKey(preference))
     {
-        if (empty($this->availableTea[$preference])) {
-            $this->availableTea[$preference] = new KarakTea();
-        }
-
-        return $this->availableTea[$preference];
+      mAvailableTea[preference] = new KarakTea();
     }
+
+    return mAvailableTea[preference];
+  }
 }
 ```
 
@@ -1134,38 +1135,38 @@ Then we have the `TeaShop` which takes orders and serves them
 ```C#
 class TeaShop
 {
-    protected $orders;
-    protected $teaMaker;
+  private Dictionary<int,KarakTea> mOrders = new Dictionary<int,KarakTea>();
+  private readonly TeaMaker mTeaMaker;
 
-    public function __construct(TeaMaker $teaMaker)
-    {
-        $this->teaMaker = $teaMaker;
-    }
+  public TeaShop(TeaMaker teaMaker)
+  {
+    mTeaMaker = teaMaker ?? throw new ArgumentNullException("teaMaker", "teaMaker cannot be null");
+  }
 
-    public function takeOrder(string $teaType, int $table)
-    {
-        $this->orders[$table] = $this->teaMaker->make($teaType);
-    }
+  public void TakeOrder(string teaType, int table)
+  {
+    mOrders[table] = mTeaMaker.Make(teaType);
+  }
 
-    public function serve()
-    {
-        foreach ($this->orders as $table => $tea) {
-            echo "Serving tea to table# " . $table;
-        }
+  public void Serve()
+  {
+    foreach(var table  in mOrders.Keys){
+      Console.WriteLine("Serving Tea to table # {0}", table);
     }
+  }
 }
 ```
 And it can be used as below
 
 ```C#
-$teaMaker = new TeaMaker();
-$shop = new TeaShop($teaMaker);
+var teaMaker = new TeaMaker();
+var teaShop = new TeaShop(teaMaker);
 
-$shop->takeOrder('less sugar', 1);
-$shop->takeOrder('more milk', 2);
-$shop->takeOrder('without sugar', 5);
+teaShop.TakeOrder("less sugar", 1);
+teaShop.TakeOrder("more milk", 2);
+teaShop.TakeOrder("without sugar", 5);
 
-$shop->serve();
+teaShop.Serve();
 // Serving tea to table# 1
 // Serving tea to table# 2
 // Serving tea to table# 5
