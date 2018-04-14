@@ -1388,7 +1388,6 @@ Wikipedia says
 First of all we have the receiver that has the implementation of every action that could be performed
 ```C#
 // Receiver
-// Receiver
 class Bulb
 {
   public void TurnOn()
@@ -1508,91 +1507,101 @@ In C# it is quite easy to implement using SPL (Standard C# Library). Translating
 ```C#
 class RadioStation
 {
-    protected $frequency;
+  private float mFrequency;
 
-    public function __construct(float $frequency)
-    {
-        $this->frequency = $frequency;
-    }
+  public RadioStation(float frequency)
+  {
+    mFrequency = frequency;
+  }
 
-    public function getFrequency(): float
-    {
-        return $this->frequency;
-    }
+  public float GetFrequecy()
+  {
+    return mFrequency;
+  }
+
 }
+
 ```
 Then we have our iterator
 
 ```C#
-use Countable;
-use Iterator;
-
-class StationList implements Countable, Iterator
+class StationList : IEnumerable
 {
-    /** @var RadioStation[] $stations */
-    protected $stations = [];
+  private List<RadioStation> mStations;
 
-    /** @var int $counter */
-    protected $counter;
+  public StationList()
+  {
+    mStations = new List<RadioStation>();
+  }
 
-    public function addStation(RadioStation $station)
+  public void AddStation(RadioStation station)
+  {
+    mStations.Add(station);
+  }
+
+  public void RemoveStation(RadioStation station)
+  {
+    mStations.Remove(station);
+  }
+
+  public IEnumerator GetEnumerator()
+  {
+    return new StationIterator(mStations);
+  }
+}
+
+class StationIterator : IEnumerator
+{
+  private List<RadioStation> mStations;
+  private int currentPosition = -1;
+
+  public object Current
+  {
+    get
     {
-        $this->stations[] = $station;
+      return mStations[currentPosition];
+    }
+  }
+
+  public StationIterator(List<RadioStation> stations)
+  {
+    mStations = stations;
+  }
+  public bool MoveNext()
+  {
+    if(currentPosition < mStations.Count - 1)
+    {
+      currentPosition = currentPosition + 1;
+      return true;
     }
 
-    public function removeStation(RadioStation $toRemove)
-    {
-        $toRemoveFrequency = $toRemove->getFrequency();
-        $this->stations = array_filter($this->stations, function (RadioStation $station) use ($toRemoveFrequency) {
-            return $station->getFrequency() !== $toRemoveFrequency;
-        });
-    }
+    return false;
+  }
 
-    public function count(): int
-    {
-        return count($this->stations);
-    }
-
-    public function current(): RadioStation
-    {
-        return $this->stations[$this->counter];
-    }
-
-    public function key()
-    {
-        return $this->counter;
-    }
-
-    public function next()
-    {
-        $this->counter++;
-    }
-
-    public function rewind()
-    {
-        $this->counter = 0;
-    }
-
-    public function valid(): bool
-    {
-        return isset($this->stations[$this->counter]);
-    }
+  public void Reset()
+  {
+    currentPosition = -1;
+  }
 }
 ```
 And then it can be used as
 ```C#
-$stationList = new StationList();
+var stations = new StationList();
+var station1 = new RadioStation(89);
+stations.AddStation(station1);
 
-$stationList->addStation(new RadioStation(89));
-$stationList->addStation(new RadioStation(101));
-$stationList->addStation(new RadioStation(102));
-$stationList->addStation(new RadioStation(103.2));
+var station2 = new RadioStation(101);
+stations.AddStation(station2);
 
-foreach($stationList as $station) {
-    echo $station->getFrequency() . C#_EOL;
+var station3 = new RadioStation(102);
+stations.AddStation(station3);
+
+foreach(RadioStation station in stations)
+{
+    Console.WriteLine(station.GetFrequecy());
 }
 
-$stationList->removeStation(new RadioStation(89)); // Will remove station 89
+stations.RemoveStation(station2); // Will Remove station 101
 ```
 
 👽 Mediator
