@@ -1020,74 +1020,76 @@ Taking our computer example from above. Here we have the computer class
 ```C#
 class Computer
 {
-    public function getElectricShock()
-    {
-        echo "Ouch!";
-    }
+  public void GetElectricShock()
+  {
+    Console.Write("Ouch!");
+  }
 
-    public function makeSound()
-    {
-        echo "Beep beep!";
-    }
+  public void MakeSound()
+  {
+    Console.Write("Beep beep!");
+  }
 
-    public function showLoadingScreen()
-    {
-        echo "Loading..";
-    }
+  public void ShowLoadingScreen()
+  {
+    Console.Write("Loading..");
+  }
 
-    public function bam()
-    {
-        echo "Ready to be used!";
-    }
+  public void Bam()
+  {
+    Console.Write("Ready to be used!");
+  }
 
-    public function closeEverything()
-    {
-        echo "Bup bup bup buzzzz!";
-    }
+  public void CloseEverything()
+  {
+    Console.Write("Bup bup bup buzzzz!");
+  }
 
-    public function sooth()
-    {
-        echo "Zzzzz";
-    }
+  public void Sooth()
+  {
+    Console.Write("Zzzzz");
+  }
 
-    public function pullCurrent()
-    {
-        echo "Haaah!";
-    }
+  public void PullCurrent()
+  {
+    Console.Write("Haaah!");
+  }
 }
 ```
 Here we have the facade
 ```C#
 class ComputerFacade
 {
-    protected $computer;
+  private readonly Computer mComputer;
 
-    public function __construct(Computer $computer)
-    {
-        $this->computer = $computer;
-    }
+  public ComputerFacade(Computer computer)
+  {
+    this.mComputer = computer ?? throw new ArgumentNullException("computer", "computer cannot be null");
+  }
 
-    public function turnOn()
-    {
-        $this->computer->getElectricShock();
-        $this->computer->makeSound();
-        $this->computer->showLoadingScreen();
-        $this->computer->bam();
-    }
+  public void TurnOn()
+  {
+    mComputer.GetElectricShock();
+    mComputer.MakeSound();
+    mComputer.ShowLoadingScreen();
+    mComputer.Bam();
+  }
 
-    public function turnOff()
-    {
-        $this->computer->closeEverything();
-        $this->computer->pullCurrent();
-        $this->computer->sooth();
-    }
+  public void TurnOff()
+  {
+    mComputer.CloseEverything();
+    mComputer.PullCurrent();
+    mComputer.Sooth();
+  }
 }
 ```
 Now to use the facade
 ```C#
-$computer = new ComputerFacade(new Computer());
-$computer->turnOn(); // Ouch! Beep beep! Loading.. Ready to be used!
-$computer->turnOff(); // Bup bup buzzz! Haah! Zzzzz
+var computer = new ComputerFacade(new Computer());
+computer.TurnOn(); // Ouch! Beep beep! Loading.. Ready to be used!
+Console.WriteLine();
+computer.TurnOff();  // Bup bup buzzz! Haah! Zzzzz
+Console.ReadLine();
 ```
 
 🍃 Flyweight
