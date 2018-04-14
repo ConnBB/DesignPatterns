@@ -1188,63 +1188,66 @@ Wikipedia says
 Taking our security door example from above. Firstly we have the door interface and an implementation of door
 
 ```C#
-interface Door
+interface IDoor
 {
-    public function open();
-    public function close();
+  void Open();
+  void Close();
 }
 
-class LabDoor implements Door
+class LabDoor : IDoor
 {
-    public function open()
-    {
-        echo "Opening lab door";
-    }
+  public void Close()
+  {
+    Console.WriteLine("Closing lab door");
+  }
 
-    public function close()
-    {
-        echo "Closing the lab door";
-    }
+  public void Open()
+  {
+    Console.WriteLine("Opening lab door");
+  }
 }
 ```
 Then we have a proxy to secure any doors that we want
 ```C#
 class SecuredDoor
 {
-    protected $door;
+  private IDoor mDoor;
 
-    public function __construct(Door $door)
-    {
-        $this->door = $door;
-    }
+  public SecuredDoor(IDoor door)
+  {
+    mDoor = door ?? throw new ArgumentNullException("door", "door can not be null");
+  }
 
-    public function open($password)
+  public void Open(string password)
+  {
+    if (Authenticate(password))
     {
-        if ($this->authenticate($password)) {
-            $this->door->open();
-        } else {
-            echo "Big no! It ain't possible.";
-        }
+      mDoor.Open();
     }
+    else
+    {
+      Console.WriteLine("Big no! It ain't possible.");
+    }
+  }
 
-    public function authenticate($password)
-    {
-        return $password === '$ecr@t';
-    }
+  private bool Authenticate(string password)
+  {
+    return password == "$ecr@t" ? true : false;
+  }
 
-    public function close()
-    {
-        $this->door->close();
-    }
+  public void Close()
+  {
+    mDoor.Close();
+  }
 }
 ```
 And here is how it can be used
 ```C#
-$door = new SecuredDoor(new LabDoor());
-$door->open('invalid'); // Big no! It ain't possible.
+var door = new SecuredDoor(new LabDoor());
+door.Open("invalid"); // Big no! It ain't possible.
 
-$door->open('$ecr@t'); // Opening lab door
-$door->close(); // Closing lab door
+door.Open("$ecr@t"); // Opening lab door
+door.Close(); // Closing lab door
 ```
 Yet another example would be some sort of data-mapper implementation. For example, I recently made an ODM (Object Data Mapper) for MongoDB using this pattern where I wrote a proxy around mongo classes while utilizing the magic method `__call()`. All the method calls were proxied to the original mongo class and result retrieved was returned as it is but in case of `find` or `findOne` data was mapped to the required class objects and the object was returned instead of `Cursor`.
 
