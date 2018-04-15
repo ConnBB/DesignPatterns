@@ -1,8 +1,9 @@
 <h3 align="center">
 Adaptation of <a href="https://github.com/kamranahmedse/design-patterns-for-humans">Design Patterns for Humans</a>  to C#
 </h3>
-<sub alingn="center">All the explanation for design patterns stays the same, with minor changes.</sub>
-***
+<p align="center"><sub>Note : All the explanation for design patterns stays the same, with minor changes.</sub></p>
+
+****
 
 <p align="center">
 🎉 Ultra-simplified explanation to design patterns! 🎉
