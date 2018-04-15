@@ -2239,71 +2239,72 @@ First of all we have our base class that specifies the skeleton for the build al
 ```C#
 abstract class Builder
 {
-
     // Template method
-    final public function build()
+    public void Build()
     {
-        $this->test();
-        $this->lint();
-        $this->assemble();
-        $this->deploy();
+      Test();
+      Lint();
+      Assemble();
+      Deploy();
     }
 
-    abstract public function test();
-    abstract public function lint();
-    abstract public function assemble();
-    abstract public function deploy();
+    abstract public void Test();
+    abstract public void Lint();
+    abstract public void Assemble();
+    abstract public void Deploy();
 }
 ```
 
 Then we can have our implementations
 
 ```C#
-class AndroidBuilder extends Builder
+class AndroidBuilder : Builder
 {
-    public function test()
-    {
-        echo 'Running android tests';
-    }
+  public override void Assemble()
+  {
+    Console.WriteLine("Assembling the android build");
+  }
 
-    public function lint()
-    {
-        echo 'Linting the android code';
-    }
+  public override void Deploy()
+  {
+    Console.WriteLine("Deploying android build to server");
+  }
 
-    public function assemble()
-    {
-        echo 'Assembling the android build';
-    }
+  public override void Lint()
+  {
+    Console.WriteLine("Linting the android code");
+  }
 
-    public function deploy()
-    {
-        echo 'Deploying android build to server';
-    }
+  public override void Test()
+  {
+    Console.WriteLine("Running android tests");
+  }
 }
 
-class IosBuilder extends Builder
+
+class IosBuilder : Builder
 {
-    public function test()
-    {
-        echo 'Running ios tests';
-    }
+  public override void Assemble()
+  {
+    Console.WriteLine("Assembling the ios build");
+  }
 
-    public function lint()
-    {
-        echo 'Linting the ios code';
-    }
+  public override void Deploy()
+  {
+    Console.WriteLine("Deploying ios build to server");
+  }
 
-    public function assemble()
-    {
-        echo 'Assembling the ios build';
-    }
+  public override void Lint()
+  {
+    Console.WriteLine("Linting the ios code");
+  }
 
-    public function deploy()
-    {
-        echo 'Deploying ios build to server';
-    }
+  public override void Test()
+  {
+    Console.WriteLine("Running ios tests");
+  }
 }
+
 ```
 And then it can be used as
 
