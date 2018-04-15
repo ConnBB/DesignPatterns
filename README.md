@@ -465,47 +465,33 @@ In C#, it can be easily done using `clone`
 ```C#
 class Sheep
 {
-    protected $name;
-    protected $category;
+  public string Name { get; set; }
 
-    public function __construct(string $name, string $category = 'Mountain Sheep')
-    {
-        $this->name = $name;
-        $this->category = $category;
-    }
+  public string Category { get; set; }
 
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
+  public Sheep(string name, string category)
+  {
+    Name = name;
+    Category = category;
+  }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setCategory(string $category)
-    {
-        $this->category = $category;
-    }
-
-    public function getCategory()
-    {
-        return $this->category;
-    }
+  public Sheep Clone()
+  {
+    return MemberwiseClone() as Sheep;
+  }
 }
 ```
 Then it can be cloned like below
 ```C#
-$original = new Sheep('Jolly');
-echo $original->getName(); // Jolly
-echo $original->getCategory(); // Mountain Sheep
+var original = new Sheep("Jolly", "Mountain Sheep");
+Console.WriteLine(original.Name); // Jolly
+Console.WriteLine(original.Category); // Mountain Sheep
 
-// Clone and modify what is required
-$cloned = clone $original;
-$cloned->setName('Dolly');
-echo $cloned->getName(); // Dolly
-echo $cloned->getCategory(); // Mountain sheep
+var cloned = original.Clone();
+cloned.Name = "Dolly";
+Console.WriteLine(cloned.Name); // Dolly
+Console.WriteLine(cloned.Category); // Mountain Sheep
+Console.WriteLine(original.Name); // Dolly
 ```
 
 Also you could use the magic method `__clone` to modify the cloning behavior.
