@@ -1623,57 +1623,57 @@ Here is the simplest example of a chat room (i.e. mediator) with users (i.e. col
 First of all, we have the mediator i.e. the chat room
 
 ```C#
-interface ChatRoomMediator 
+interface IChatRoomMediator
 {
-    public function showMessage(User $user, string $message);
+  void ShowMessage(User user, string message);
 }
 
-// Mediator
-class ChatRoom implements ChatRoomMediator
+//Mediator
+class ChatRoom : IChatRoomMediator
 {
-    public function showMessage(User $user, string $message)
-    {
-        $time = date('M d, y H:i');
-        $sender = $user->getName();
-
-        echo $time . '[' . $sender . ']:' . $message;
-    }
+  public void ShowMessage(User user, string message)
+  {
+    Console.WriteLine("{0} [{1}]:{2}", DateTime.Now.ToString("MMMM dd, H:mm"), user.GetName(), message);
+  }
 }
 ```
 
 Then we have our users i.e. colleagues
 ```C#
-class User {
-    protected $name;
-    protected $chatMediator;
+class User
+{
+  private string mName;
+  private IChatRoomMediator mChatRoom;
 
-    public function __construct(string $name, ChatRoomMediator $chatMediator) {
-        $this->name = $name;
-        $this->chatMediator = $chatMediator;
-    }
+  public User(string name, IChatRoomMediator chatroom)
+  {
+    mChatRoom = chatroom;
+    mName = name;
+  }
 
-    public function getName() {
-        return $this->name;
-    }
+  public string GetName()
+  {
+    return mName;
+  }
 
-    public function send($message) {
-        $this->chatMediator->showMessage($this, $message);
-    }
+  public void Send(string message)
+  {
+    mChatRoom.ShowMessage(this, message);
+  }
 }
 ```
 And the usage
 ```C#
-$mediator = new ChatRoom();
+var mediator = new ChatRoom();
 
-$john = new User('John Doe', $mediator);
-$jane = new User('Jane Doe', $mediator);
+var john = new User("John", mediator);
+var jane = new User("Jane", mediator);
 
-$john->send('Hi there!');
-$jane->send('Hey!');
+john.Send("Hi there!");
+jane.Send("Hey!");
 
-// Output will be
-// Feb 14, 10:58 [John]: Hi there!
-// Feb 14, 10:58 [Jane]: Hey!
+//April 14, 20:05[John]:Hi there!
+//April 14, 20:05[Jane]:Hey!
 ```
 
 💾 Memento
