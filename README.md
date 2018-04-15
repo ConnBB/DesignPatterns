@@ -2319,7 +2319,7 @@ And that about wraps it up. I will continue to improve this, so you might want t
 - Report issues
 - Open pull request with improvements
 - Spread the word
-- Contect me on <a href="https://twitter.com/anupavanm">Twitter</a> 
+- Contact me on <a href="https://twitter.com/anupavanm">Twitter</a> 
 
 ## License
 
