@@ -2136,72 +2136,74 @@ Let's take an example of text editor, it lets you change the state of text that 
 First of all we have our state interface and some state implementations
 
 ```C#
-interface WritingState
-{
-    public function write(string $words);
+interface IWritingState {
+
+  void Write(string words);
+
 }
 
-class UpperCase implements WritingState
+class UpperCase : IWritingState
 {
-    public function write(string $words)
-    {
-        echo strtoupper($words);
-    }
+  public void Write(string words)
+  {
+    Console.WriteLine(words.ToUpper());
+  }
 }
 
-class LowerCase implements WritingState
+class LowerCase : IWritingState
 {
-    public function write(string $words)
-    {
-        echo strtolower($words);
-    }
+  public void Write(string words)
+  {
+    Console.WriteLine(words.ToLower());
+  }
 }
 
-class DefaultText implements WritingState
+class DefaultText : IWritingState
 {
-    public function write(string $words)
-    {
-        echo $words;
-    }
+  public void Write(string words)
+  {
+    Console.WriteLine(words);
+  }
 }
 ```
 Then we have our editor
 ```C#
-class TextEditor
-{
-    protected $state;
+class TextEditor {
 
-    public function __construct(WritingState $state)
-    {
-        $this->state = $state;
-    }
+  private IWritingState mState;
 
-    public function setState(WritingState $state)
-    {
-        $this->state = $state;
-    }
+  public TextEditor()
+  {
+    mState = new DefaultText();
+  }
 
-    public function type(string $words)
-    {
-        $this->state->write($words);
-    }
+  public void SetState(IWritingState state)
+  {
+    mState = state;
+  }
+
+  public void Type(string words)
+  {
+    mState.Write(words);
+  }
+
 }
 ```
 And then it can be used as
 ```C#
-$editor = new TextEditor(new DefaultText());
+var editor = new TextEditor();
 
-$editor->type('First line');
+editor.Type("First line");
 
-$editor->setState(new UpperCase());
+editor.SetState(new UpperCase());
 
-$editor->type('Second line');
-$editor->type('Third line');
+editor.Type("Second Line");
+editor.Type("Third Line");
 
-$editor->setState(new LowerCase());
+editor.SetState(new LowerCase());
 
-$editor->type('Fourth line');
-$editor->type('Fifth line');
+editor.Type("Fourth Line");
+editor.Type("Fifthe Line");
 
 // Output:
 // First line
