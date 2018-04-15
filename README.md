@@ -1795,76 +1795,116 @@ Translating our example from above. First of all we have job seekers that need t
 ```C#
 class JobPost
 {
-    protected $title;
+  public string Title { get; private set; }
 
-    public function __construct(string $title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
+  public JobPost(string title)
+  {
+    Title = title;
+  }
 }
-
-class JobSeeker implements Observer
+class JobSeeker : IObserver<JobPost>
 {
-    protected $name;
+  public string Name { get; private set; }
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
+  public JobSeeker(string name)
+  {
+    Name = name;
+  }
 
-    public function onJobPosted(JobPost $job)
-    {
-        // Do something with the job posting
-        echo 'Hi ' . $this->name . '! New job posted: '. $job->getTitle();
-    }
+  //Method is not being called by JobPostings class currently
+  public void OnCompleted()
+  {
+    //No Implementation
+  }
+
+  //Method is not being called by JobPostings class currently
+  public void OnError(Exception error)
+  {
+    //No Implementation
+  }
+
+  public void OnNext(JobPost value)
+  {
+    Console.WriteLine("Hi {0} ! New job posted: {1}", Name, value.Title);
+  }
 }
 ```
 Then we have our job postings to which the job seekers will subscribe
 ```C#
-class JobPostings implements Observable
+class JobPostings : IObservable<JobPost>
 {
-    protected $observers = [];
+  private List<IObserver<JobPost>> mObservers;
+  private List<JobPost> mJobPostings;
 
-    protected function notify(JobPost $jobPosting)
-    {
-        foreach ($this->observers as $observer) {
-            $observer->onJobPosted($jobPosting);
-        }
-    }
+  public JobPostings()
+  {
+    mObservers = new List<IObserver<JobPost>>();
+    mJobPostings = new List<JobPost>();
+  }
 
-    public function attach(Observer $observer)
+  public IDisposable Subscribe(IObserver<JobPost> observer)
+  {
+    // Check whether observer is already registered. If not, add it
+    if (!mObservers.Contains(observer))
     {
-        $this->observers[] = $observer;
+      mObservers.Add(observer);
     }
+    return new Unsubscriber<JobPost>(mObservers, observer);
+  }
 
-    public function addJob(JobPost $jobPosting)
+  private void Notify(JobPost jobPost)
+  {
+    foreach(var observer in mObservers)
     {
-        $this->notify($jobPosting);
+      observer.OnNext(jobPost);
     }
+  }
+
+  public void AddJob(JobPost jobPost)
+  {
+    mJobPostings.Add(jobPost);
+    Notify(jobPost);
+  }
+
+}
+
+internal class Unsubscriber<JobPost> : IDisposable
+{
+  private List<IObserver<JobPost>> mObservers;
+  private IObserver<JobPost> mObserver;
+
+  internal Unsubscriber(List<IObserver<JobPost>> observers, IObserver<JobPost> observer)
+  {
+    this.mObservers = observers;
+    this.mObserver = observer;
+  }
+
+  public void Dispose()
+  {
+    if (mObservers.Contains(mObserver))
+      mObservers.Remove(mObserver);
+  }
 }
 ```
 Then it can be used as
 ```C#
-// Create subscribers
-$johnDoe = new JobSeeker('John Doe');
-$janeDoe = new JobSeeker('Jane Doe');
+//Create Subscribers
+var johnDoe = new JobSeeker("John Doe");
+var janeDoe = new JobSeeker("Jane Doe");
 
-// Create publisher and attach subscribers
-$jobPostings = new JobPostings();
-$jobPostings->attach($johnDoe);
-$jobPostings->attach($janeDoe);
+//Create publisher and attch subscribers
+var jobPostings = new JobPostings();
+jobPostings.Subscribe(johnDoe);
+jobPostings.Subscribe(janeDoe);
 
-// Add a new job and see if subscribers get notified
-$jobPostings->addJob(new JobPost('Software Engineer'));
+//Add a new job and see if subscribers get notified
+jobPostings.AddJob(new JobPost("Software Engineer"));
 
-// Output
+//Output
 // Hi John Doe! New job posted: Software Engineer
 // Hi Jane Doe! New job posted: Software Engineer
+
+Console.ReadLine();
 ```
 
 🏃 Visitor
