@@ -1698,71 +1698,84 @@ First of all we have our memento object that will be able to hold the editor sta
 ```C#
 class EditorMemento
 {
-    protected $content;
+  private string mContent;
 
-    public function __construct(string $content)
-    {
-        $this->content = $content;
-    }
+  public EditorMemento(string content)
+  {
+    mContent = content;
+  }
 
-    public function getContent()
+  public string Content
+  {
+    get
     {
-        return $this->content;
+      return mContent;
     }
+  }
 }
 ```
 
 Then we have our editor i.e. originator that is going to use memento object
 
 ```C#
-class Editor
-{
-    protected $content = '';
+class Editor {
 
-    public function type(string $words)
-    {
-        $this->content = $this->content . ' ' . $words;
-    }
+  private string mContent = string.Empty;
+  private EditorMemento memento;
 
-    public function getContent()
-    {
-        return $this->content;
-    }
+  public Editor()
+  {
+    memento = new EditorMemento(string.Empty);
+  }
 
-    public function save()
-    {
-        return new EditorMemento($this->content);
-    }
+  public void Type(string words)
+  {
+    mContent = String.Concat(mContent," ", words);
+  }
 
-    public function restore(EditorMemento $memento)
+  public string Content
+  {
+    get
     {
-        $this->content = $memento->getContent();
+      return mContent;
     }
+  }
+
+  public void Save()
+  {
+    memento = new EditorMemento(mContent);
+  }
+
+  public void Restore()
+  {
+    mContent = memento.Content;
+  }
 }
 ```
 
 And then it can be used as
 
 ```C#
-$editor = new Editor();
+var editor = new Editor();
 
-// Type some stuff
-$editor->type('This is the first sentence.');
-$editor->type('This is second.');
+//Type some stuff
+editor.Type("This is the first sentence.");
+editor.Type("This is second.");
 
 // Save the state to restore to : This is the first sentence. This is second.
-$saved = $editor->save();
+editor.Save();
 
-// Type some more
-$editor->type('And this is third.');
+//Type some more
+editor.Type("This is thrid.");
 
-// Output: Content before Saving
-echo $editor->getContent(); // This is the first sentence. This is second. And this is third.
+//Output the content
+Console.WriteLine(editor.Content); // This is the first sentence. This is second. This is third.
 
-// Restoring to last saved state
-$editor->restore($saved);
+//Restoring to last saved state
+editor.Restore();
 
-$editor->getContent(); // This is the first sentence. This is second.
+Console.Write(editor.Content); // This is the first sentence. This is second
+
 ```
 
 😎 Observer
