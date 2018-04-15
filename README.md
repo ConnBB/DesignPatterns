@@ -1,5 +1,5 @@
 <h3>
-Adaptation of [Design Patterns for Humans](https://github.com/kamranahmedse/design-patterns-for-humans)  to C#
+Adaptation of [Design Patterns for Humans]<a href="https://github.com/kamranahmedse/design-patterns-for-humans"></a>  to C#
 </h3>
 ***
 
