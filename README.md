@@ -1924,126 +1924,128 @@ Let's take an example of a zoo simulation where we have several different kinds 
 
 ```C#
 // Visitee
-interface Animal
+interface IAnimal
 {
-    public function accept(AnimalOperation $operation);
+  void Accept(IAnimalOperation operation);
 }
 
 // Visitor
-interface AnimalOperation
+interface IAnimalOperation
 {
-    public function visitMonkey(Monkey $monkey);
-    public function visitLion(Lion $lion);
-    public function visitDolphin(Dolphin $dolphin);
+  void VisitMonkey(Monkey monkey);
+  void VisitLion(Lion lion);
+  void VisitDolphin(Dolphin dolphin);
 }
 ```
 Then we have our implementations for the animals
 ```C#
-class Monkey implements Animal
+class Monkey : IAnimal
 {
-    public function shout()
-    {
-        echo 'Ooh oo aa aa!';
-    }
+  public void Shout()
+  {
+    Console.WriteLine("Oooh o aa aa!");
+  }
 
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitMonkey($this);
-    }
+  public void Accept(IAnimalOperation operation)
+  {
+    throw new NotImplementedException();
+  }
 }
 
-class Lion implements Animal
+class Lion : IAnimal
 {
-    public function roar()
-    {
-        echo 'Roaaar!';
-    }
+  public void Roar()
+  {
+    Console.WriteLine("Roaar!");
+  }
 
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitLion($this);
-    }
+  public void Accept(IAnimalOperation operation)
+  {
+    throw new NotImplementedException();
+  }
 }
 
-class Dolphin implements Animal
+class Dolphin : IAnimal
 {
-    public function speak()
-    {
-        echo 'Tuut tuttu tuutt!';
-    }
+  public void Speak()
+  {
+    Console.WriteLine("Tuut tittu tuutt!");
+  }
 
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitDolphin($this);
-    }
+  public void Accept(IAnimalOperation operation)
+  {
+    throw new NotImplementedException();
+  }
 }
 ```
 Let's implement our visitor
 ```C#
-class Speak implements AnimalOperation
+class Speak : IAnimalOperation
 {
-    public function visitMonkey(Monkey $monkey)
-    {
-        $monkey->shout();
-    }
+  public void VisitDolphin(Dolphin dolphin)
+  {
+    dolphin.Speak();
+  }
 
-    public function visitLion(Lion $lion)
-    {
-        $lion->roar();
-    }
+  public void VisitLion(Lion lion)
+  {
+    lion.Roar();
+  }
 
-    public function visitDolphin(Dolphin $dolphin)
-    {
-        $dolphin->speak();
-    }
+  public void VisitMonkey(Monkey monkey)
+  {
+    monkey.Shout();
+  }
 }
 ```
 
 And then it can be used as
 ```C#
-$monkey = new Monkey();
-$lion = new Lion();
-$dolphin = new Dolphin();
+var monkey = new Monkey();
+var lion = new Lion();
+var dolphin = new Dolphin();
 
-$speak = new Speak();
+var speak = new Speak();
 
-$monkey->accept($speak);    // Ooh oo aa aa!    
-$lion->accept($speak);      // Roaaar!
-$dolphin->accept($speak);   // Tuut tutt tuutt!
+monkey.Accept(speak);    // Ooh oo aa aa!    
+lion.Accept(speak);      // Roaaar!
+dolphin.Accept(speak);   // Tuut tutt tuutt!
+
 ```
 We could have done this simply by having an inheritance hierarchy for the animals but then we would have to modify the animals whenever we would have to add new actions to animals. But now we will not have to change them. For example, let's say we are asked to add the jump behavior to the animals, we can simply add that by creating a new visitor i.e.
 
 ```C#
-class Jump implements AnimalOperation
+class Jump : IAnimalOperation
 {
-    public function visitMonkey(Monkey $monkey)
-    {
-        echo 'Jumped 20 feet high! on to the tree!';
-    }
+  public void VisitDolphin(Dolphin dolphin)
+  {
+    Console.WriteLine("Jumped 20 feet high! on to the tree!");
+  }
 
-    public function visitLion(Lion $lion)
-    {
-        echo 'Jumped 7 feet! Back on the ground!';
-    }
+  public void VisitLion(Lion lion)
+  {
+    Console.WriteLine("Jumped 7 feet! Back on the ground!");
+  }
 
-    public function visitDolphin(Dolphin $dolphin)
-    {
-        echo 'Walked on water a little and disappeared';
-    }
+  public void VisitMonkey(Monkey monkey)
+  {
+    Console.WriteLine("Walked on water a little and disappeared!");
+  }
 }
 ```
 And for the usage
 ```C#
-$jump = new Jump();
+var jump = new Jump();
 
-$monkey->accept($speak);   // Ooh oo aa aa!
-$monkey->accept($jump);    // Jumped 20 feet high! on to the tree!
+monkey.Accept(speak);   // Ooh oo aa aa!
+monkey.Accept(jump);    // Jumped 20 feet high! on to the tree!
 
-$lion->accept($speak);     // Roaaar!
-$lion->accept($jump);      // Jumped 7 feet! Back on the ground!
+lion.Accept(speak);     // Roaaar!
+lion.Accept(jump);      // Jumped 7 feet! Back on the ground!
 
-$dolphin->accept($speak);  // Tuut tutt tuutt!
-$dolphin->accept($jump);   // Walked on water a little and disappeared
+dolphin.Accept(speak);  // Tuut tutt tuutt!
+dolphin.Accept(jump);   // Walked on water a little and disappeared
+
 ```
 
 💡 Strategy
