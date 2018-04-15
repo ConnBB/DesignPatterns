@@ -1,7 +1,7 @@
-<h3>
+<h3 align="center">
 Adaptation of <a href="https://github.com/kamranahmedse/design-patterns-for-humans">Design Patterns for Humans</a>  to C#
 </h3>
-<sub>All the explanation for design patterns stays the same, with minor changes.</sub>
+<sub alingn="center">All the explanation for design patterns stays the same, with minor changes.</sub>
 ***
 
 <p align="center">
@@ -11,6 +11,7 @@ Adaptation of <a href="https://github.com/kamranahmedse/design-patterns-for-huma
 A topic that can easily make anyone's mind wobble. Here I try to make them stick in to your mind (and maybe mine) by explaining them in the <i>simplest</i> way possible.
 </p>
 
+****
 🚀 Introduction
 =================
 
