@@ -2065,31 +2065,27 @@ Wikipedia says
 Translating our example from above. First of all we have our strategy interface and different strategy implementations
 
 ```C#
-interface SortStrategy
+interface ISortStrategy
 {
-    public function sort(array $dataset): array;
+  List<int> Sort(List<int> dataset);
 }
 
-class BubbleSortStrategy implements SortStrategy
+class BubbleSortStrategy : ISortStrategy
 {
-    public function sort(array $dataset): array
-    {
-        echo "Sorting using bubble sort";
-
-        // Do sorting
-        return $dataset;
-    }
+  public List<int> Sort(List<int> dataset)
+  {
+    Console.WriteLine("Sorting using Bubble Sort !");
+    return dataset;
+  }
 }
 
-class QuickSortStrategy implements SortStrategy
+class QuickSortStrategy : ISortStrategy
 {
-    public function sort(array $dataset): array
-    {
-        echo "Sorting using quick sort";
-
-        // Do sorting
-        return $dataset;
-    }
+  public List<int> Sort(List<int> dataset)
+  {
+    Console.WriteLine("Sorting using Quick Sort !");
+    return dataset;
+  }
 }
 ```
 
@@ -2097,28 +2093,28 @@ And then we have our client that is going to use any strategy
 ```C#
 class Sorter
 {
-    protected $sorter;
+  private readonly ISortStrategy mSorter;
 
-    public function __construct(SortStrategy $sorter)
-    {
-        $this->sorter = $sorter;
-    }
+  public Sorter(ISortStrategy sorter)
+  {
+    mSorter = sorter;
+  }
 
-    public function sort(array $dataset): array
-    {
-        return $this->sorter->sort($dataset);
-    }
+  public List<int> Sort(List<int> unSortedList)
+  {
+    return mSorter.Sort(unSortedList);
+  }
 }
 ```
 And it can be used as
 ```C#
-$dataset = [1, 5, 4, 3, 2, 8];
+var unSortedList = new List<int> { 1, 10, 2, 16, 19 };
 
-$sorter = new Sorter(new BubbleSortStrategy());
-$sorter->sort($dataset); // Output : Sorting using bubble sort
+var sorter = new Sorter(new QuickSortStrategy());
+sorter.Sort(unSortedList); // // Output : Sorting using Bubble Sort !
 
-$sorter = new Sorter(new QuickSortStrategy());
-$sorter->sort($dataset); // Output : Sorting using quick sort
+sorter = new Sorter(new QuickSortStrategy());
+sorter.Sort(unSortedList); // // Output : Sorting using Quick Sort !
 ```
 
 💢 State
