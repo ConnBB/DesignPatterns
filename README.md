@@ -1,6 +1,7 @@
 <h3>
-Adaptation of [Design Patterns for Humans]<a href="https://github.com/kamranahmedse/design-patterns-for-humans"></a>  to C#
+Adaptation of <a href="https://github.com/kamranahmedse/design-patterns-for-humans">Design Patterns for Humans</a>  to C#
 </h3>
+<sub>All the explanation for design patterns stays the same, with minor changes.</sub>
 ***
 
 <p align="center">
@@ -9,14 +10,6 @@ Adaptation of [Design Patterns for Humans]<a href="https://github.com/kamranahme
 <p align="center">
 A topic that can easily make anyone's mind wobble. Here I try to make them stick in to your mind (and maybe mine) by explaining them in the <i>simplest</i> way possible.
 </p>
-
-***
-
-<p align="center"><b>👋 You might be interested in ES Guy – Weekly booklet on Frontend Development </b><br> <a href="http://esguy.com">Read the details and Subscribe here</a></p>
-
-***
-
-<sub>Check out my [blog](http://kamranahmed.info) and say "hi" on [Twitter](https://twitter.com/kamranahmedse).</sub>
 
 🚀 Introduction
 =================
@@ -461,7 +454,7 @@ In short, it allows you to create a copy of an existing object and modify it to 
 
 **Programmatic Example**
 
-In C#, it can be easily done using `clone`
+In C#, it can be easily done using `MemberwiseClone()`
 
 ```C#
 class Sheep
@@ -1489,7 +1482,7 @@ Wikipedia says
 
 **Programmatic example**
 
-In C# it is quite easy to implement using SPL (Standard C# Library). Translating our radio stations example from above. First of all we have `RadioStation`
+In C# it can be done by implementing IEnumerable and IEnumerator. Translating our radio stations example from above. First of all we have `RadioStation`
 
 ```C#
 class RadioStation
@@ -2324,11 +2317,6 @@ And that about wraps it up. I will continue to improve this, so you might want t
 - Report issues
 - Open pull request with improvements
 - Spread the word
-- Reach out with any feedback [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/kamranahmedse.svg?style=social&label=Follow%20%40kamranahmedse)](https://twitter.com/kamranahmedse)
-
-## Sponsored By
-
-- [Highig - Think and its done](http://highig.com/)
 
 ## License
 
