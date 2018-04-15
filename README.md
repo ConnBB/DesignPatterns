@@ -1,7 +1,7 @@
 <h3 align="center">
 Adaptation of <a href="https://github.com/kamranahmedse/design-patterns-for-humans">Design Patterns for Humans</a>  to C#
 </h3>
-<p align="center"><sub>Note : All the explanation for design patterns stays the same, with minor changes.</sub></p>
+<p align="center"><sub>All the explanation for design patterns stays the same, with minor changes.</sub></p>
 
 ****
 
@@ -2319,6 +2319,7 @@ And that about wraps it up. I will continue to improve this, so you might want t
 - Report issues
 - Open pull request with improvements
 - Spread the word
+- Contect me on <a href="https://twitter.com/anupavanm">Twitter</a> 
 
 ## License
 
