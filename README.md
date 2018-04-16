@@ -2297,14 +2297,17 @@ And then it can be used as
 $androidBuilder = new AndroidBuilder();
 $androidBuilder->build();
 
+var androidBuilder = new AndroidBuilder();
+androidBuilder.Build();
+
 // Output:
 // Running android tests
 // Linting the android code
 // Assembling the android build
 // Deploying android build to server
 
-$iosBuilder = new IosBuilder();
-$iosBuilder->build();
+var iosBuilder = new IosBuilder();
+iosBuilder.Build();
 
 // Output:
 // Running ios tests
