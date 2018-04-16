@@ -2294,9 +2294,6 @@ class IosBuilder : Builder
 And then it can be used as
 
 ```C#
-$androidBuilder = new AndroidBuilder();
-$androidBuilder->build();
-
 var androidBuilder = new AndroidBuilder();
 androidBuilder.Build();
 
