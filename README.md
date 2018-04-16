@@ -2004,7 +2004,7 @@ class Jump : IAnimalOperation
 {
   public void VisitDolphin(Dolphin dolphin)
   {
-    Console.WriteLine("Jumped 20 feet high! on to the tree!");
+    Console.WriteLine("Walked on water a little and disappeared!");
   }
 
   public void VisitLion(Lion lion)
@@ -2014,7 +2014,7 @@ class Jump : IAnimalOperation
 
   public void VisitMonkey(Monkey monkey)
   {
-    Console.WriteLine("Walked on water a little and disappeared!");
+    Console.WriteLine("Jumped 20 feet high! on to the tree!");
   }
 }
 ```
