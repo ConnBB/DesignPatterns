@@ -1933,7 +1933,7 @@ class Monkey : IAnimal
 
   public void Accept(IAnimalOperation operation)
   {
-    throw new NotImplementedException();
+      operation.VisitMonkey(this);
   }
 }
 
@@ -1946,7 +1946,7 @@ class Lion : IAnimal
 
   public void Accept(IAnimalOperation operation)
   {
-    throw new NotImplementedException();
+      operation.VisitLion(this);
   }
 }
 
@@ -1959,7 +1959,7 @@ class Dolphin : IAnimal
 
   public void Accept(IAnimalOperation operation)
   {
-    throw new NotImplementedException();
+      operation.VisitDolphin(this);
   }
 }
 ```
