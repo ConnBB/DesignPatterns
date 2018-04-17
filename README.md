@@ -1532,7 +1532,7 @@ class StationList : IEnumerable<RadioStation>
 
   public IEnumerator<RadioStation> GetEnumerator()
   {
-    return mStations.GetEnumerator();
+    return this.GetEnumerator();
   }
 
   IEnumerator IEnumerable.GetEnumerator()
