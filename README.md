@@ -1217,7 +1217,7 @@ class SecuredDoor
 
   private bool Authenticate(string password)
   {
-    return password == "$ecr@t" ? true : false;
+    return password == "$ecr@t";
   }
 
   public void Close()
