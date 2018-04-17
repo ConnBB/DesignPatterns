@@ -1510,62 +1510,41 @@ class RadioStation
 Then we have our iterator
 
 ```C#
-class StationList : IEnumerable
+class StationList : IEnumerable<RadioStation>
 {
-  private List<RadioStation> mStations;
+  List<RadioStation> mStations = new List<RadioStation>();
 
-  public StationList()
+  public RadioStation this[int index]
   {
-    mStations = new List<RadioStation>();
+    get { return mStations[index]; }
+    set { mStations.Insert(index, value); }
   }
 
-  public void AddStation(RadioStation station)
+  public void Add(RadioStation station)
   {
     mStations.Add(station);
   }
 
-  public void RemoveStation(RadioStation station)
+  public void Remove(RadioStation station)
   {
     mStations.Remove(station);
   }
 
-  public IEnumerator GetEnumerator()
+  public IEnumerator<RadioStation> GetEnumerator()
   {
-    return new StationIterator(mStations);
+    return mStations.GetEnumerator();
   }
-}
 
-class StationIterator : IEnumerator
-{
-  private List<RadioStation> mStations;
-  private int currentPosition = -1;
-
-  public object Current
+  IEnumerator IEnumerable.GetEnumerator()
   {
-    get
+    //Use can switch to this internal collection if you do not want to transform
+    //return this.GetEnumerator();
+
+    //use this if you want to transform the object before rendering
+    foreach (var x in mStations)
     {
-      return mStations[currentPosition];
+      yield return x;
     }
-  }
-
-  public StationIterator(List<RadioStation> stations)
-  {
-    mStations = stations;
-  }
-  public bool MoveNext()
-  {
-    if(currentPosition < mStations.Count - 1)
-    {
-      currentPosition = currentPosition + 1;
-      return true;
-    }
-
-    return false;
-  }
-
-  public void Reset()
-  {
-    currentPosition = -1;
   }
 }
 ```
@@ -1573,20 +1552,23 @@ And then it can be used as
 ```C#
 var stations = new StationList();
 var station1 = new RadioStation(89);
-stations.AddStation(station1);
+stations.Add(station1);
 
 var station2 = new RadioStation(101);
-stations.AddStation(station2);
+stations.Add(station2);
 
 var station3 = new RadioStation(102);
-stations.AddStation(station3);
+stations.Add(station3);
 
-foreach(RadioStation station in stations)
+foreach(var x in stations)
 {
-    Console.WriteLine(station.GetFrequecy());
+  Console.Write(x.GetFrequecy());
 }
 
-stations.RemoveStation(station2); // Will Remove station 101
+var q = stations.Where(x => x.GetFrequecy() == 89).FirstOrDefault();
+Console.WriteLine(q.GetFrequecy());
+
+Console.ReadLine();
 ```
 
 👽 Mediator
