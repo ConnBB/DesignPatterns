@@ -1538,7 +1538,7 @@ class StationList : IEnumerable<RadioStation>
   IEnumerator IEnumerable.GetEnumerator()
   {
     //Use can switch to this internal collection if you do not want to transform
-    //return this.GetEnumerator();
+    //return mStations.GetEnumerator();
 
     //use this if you want to transform the object before rendering
     foreach (var x in mStations)
