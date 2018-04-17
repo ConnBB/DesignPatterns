@@ -1487,7 +1487,7 @@ Wikipedia says
 
 **Programmatic example**
 
-In C# it can be done by implementing IEnumerable and IEnumerator. Translating our radio stations example from above. First of all we have `RadioStation`
+In C# it can be done by implementing IEnumerable<T>. Translating our radio statiIons example from above. First of all we have `RadioStation`
 
 ```C#
 class RadioStation
