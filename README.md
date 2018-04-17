@@ -981,7 +981,7 @@ Console.WriteLine("{0}", whipCoffee.GetDescription()); // Simple Coffee, milk, w
 
 var vanillaCoffee = new VanillaCoffee(whipCoffee);
 Console.WriteLine("{0:c}", vanillaCoffee.GetCost()); // $ 8.00
-Console.WriteLine("{0}", vanillaCoffee.GetDescription()); // Simple Coffee, milk, whip
+Console.WriteLine("{0}", vanillaCoffee.GetDescription()); // Simple Coffee, milk, whip, vanilla
 ```
 
 📦 Facade
